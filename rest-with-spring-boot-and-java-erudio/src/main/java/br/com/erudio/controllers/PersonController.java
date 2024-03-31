@@ -17,11 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.erudio.model.Person;
 import br.com.erudio.services.PersonServices;
 
-
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-	
+
 	@Autowired
 	private PersonServices service;
 	
@@ -35,13 +34,13 @@ public class PersonController {
 	public Person findById(@PathVariable(value = "id") Long id) {
 		return service.findById(id);
 	}
-
+	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Person create(@RequestBody Person person) {
 		return service.create(person);
 	}
-
+	
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Person update(@RequestBody Person person) {
