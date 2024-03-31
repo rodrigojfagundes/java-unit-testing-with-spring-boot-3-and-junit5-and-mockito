@@ -31,21 +31,19 @@ import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.services.PersonServices;
 
-
-
 //CLASS para TESTAR os metodos da PERSONCONTROLLER/PERSONRESOURCE
 @WebMvcTest
 public class PersonControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-
+	
 	@Autowired
 	private ObjectMapper mapper;
 	
 	@MockBean
 	private PersonServices service;
-	
+
 	private Person person;
 	
 	@BeforeEach
@@ -73,7 +71,7 @@ public class PersonControllerTest {
 			.willAnswer((invocation) -> invocation.getArgument(0));
 		
 		//When / Act
-		
+
 		//chamando o METODO PERFORM do MOCKMVC e ele vai fazer uma REQUISICAO do TIPO
 		//POST para a URL /PERSON... Q no caso cai no PERSONCONTROLLER.JAVA
 		//e o POST e o do METODO CREATE... E dai USANDO JSON nos vamos passar o 
@@ -110,7 +108,7 @@ public class PersonControllerTest {
 				"Uberlandia - Minas Gerais - Brasil",
 				"Male"));
 		given(service.findAll()).willReturn(persons);
-				
+		
 		//When / Act
 		ResultActions response = mockMvc.perform(get("/person"));
 		
@@ -129,7 +127,7 @@ public class PersonControllerTest {
 		
 		//Given / Arrange
 		long personId = 1L;
-
+		
 		given(service.findById(personId))
 			.willReturn(person);
 		
@@ -143,7 +141,7 @@ public class PersonControllerTest {
 		.andExpect(jsonPath("$.firstName", is(person.getFirstName())))
 		.andExpect(jsonPath("$.lastName", is(person.getLastName())))
 		.andExpect(jsonPath("$.email", is(person.getEmail())));
-			
+		
 	}
 	
 	@Test
@@ -152,7 +150,6 @@ public class PersonControllerTest {
 		
 		//Given / Arrange
 		long personId = 1L;
-		
 		given(service.findById(personId))
 			.willThrow(ResourceNotFoundException.class);
 		
@@ -162,15 +159,17 @@ public class PersonControllerTest {
 		//Then / Assert
 		response
 		.andExpect(status().isNotFound())
-		.andDo(print());				
+		.andDo(print());		
+		
 	}
-	
+
 	@Test
 	@DisplayName("Given Update PersonWhen Update Then Return Updated Person Object")
 	void testGivenUpdatePerson_WhenUpdate_ThenReturnUpdatedPersonObject() throws JsonProcessingException, Exception {
 		
 		//Given / Arrange
 		long personId = 1L;
+		
 		given(service.findById(personId)).willReturn(person);
 		given(service.update(any(Person.class)))
 			.willAnswer((invocation) -> invocation.getArgument(0));
@@ -181,7 +180,7 @@ public class PersonControllerTest {
 				"leonardo@erudio.com.br",
 				"Uberlandia - Minas Gerais - Brasil",
 				"Male");
-				
+		
 		ResultActions response = mockMvc.perform(put("/person")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(updatedPerson)));
@@ -197,9 +196,32 @@ public class PersonControllerTest {
 		
 	}
 	
-	
-	
-	
-	
-	
+	@Test
+	@DisplayName("Given Unexistent Person When Update Then Return Not Found")
+	void testGivenUnexistentPerson_WhenUpdate_ThenReturnNotFound() throws JsonProcessingException, Exception {
+		
+		//Given / Arrange
+		long personId = 1L;
+		
+		given(service.findById(personId)).willReturn(person);
+		given(service.update(any(Person.class)))
+			.willAnswer((invocation) -> invocation.getArgument(1));
+				
+		//When / Act
+
+		Person updatedPerson = new Person("Leonardo", 
+				"Costa", 
+				"leonardo@erudio.com.br",
+				"Uberlandia - Minas Gerais - Brasil",
+				"Male");
+		
+		ResultActions response = mockMvc.perform(put("/person")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(updatedPerson)));
+		
+		//Then / Assert
+		response
+		.andExpect(status().isNotFound())
+		.andDo(print());		
+	}
 }
