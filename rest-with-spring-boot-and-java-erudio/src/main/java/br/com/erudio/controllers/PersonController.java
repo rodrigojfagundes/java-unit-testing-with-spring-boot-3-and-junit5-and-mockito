@@ -22,6 +22,12 @@ public class PersonController {
 
 	///private PersonServices service = new PersonServices();
 
+	@RequestMapping(method=RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Person> findAll() {
+		return service.findAll();
+	}
+
 	@RequestMapping(value = "/{id}",
 			method=RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,5 +36,4 @@ public class PersonController {
 	}
 	
 
-	
 }
