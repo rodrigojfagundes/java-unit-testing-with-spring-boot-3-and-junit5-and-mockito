@@ -30,7 +30,7 @@ class PersonRepositoryTest {
 	void testGivenPersonObject_whenSave_ThenReturnSavedPerson() {
 		
 		//Given / Arrange
-
+	
 		//instanciando um OBJ do tipo PERSON, e atribuindo a ele os valores
 		//leandro, costa, leandro@eurudio.com.br, etc...
 		Person person0 = new Person("Leandro", 
@@ -56,28 +56,32 @@ class PersonRepositoryTest {
 
 	}
 
+	
 	@DisplayName("Given Person List when findAll Then Return Saved Person List")
 	@Test
 	void testGivenPersonList_whenFindAll_ThenReturnSavedPersonList() {
 		
 		//Given / Arrange
+
 		Person person0 = new Person("Leandro", 
 				"Costa", 
 				"leandro@erudio.com.br",
 				"Uberlandia - Minas Gerais - Brasil",
 				"Male");
-
+		
 		Person person1 = new Person("Leonardo", 
 				"Costa", 
 				"leonardo@erudio.com.br",
 				"Uberlandia - Minas Gerais - Brasil",
 				"Male");
-
+		
 		repository.save(person0);
 		repository.save(person1);
 		
 		//When / Act
+
 		List<Person> personList = repository.findAll();
+				
 		
 		//Then / Assert
 		assertNotNull(personList);
@@ -97,16 +101,38 @@ class PersonRepositoryTest {
 				"Male");
 
 		repository.save(person0);
-		
-		
+				
 		//When / Act
 		Person savedPerson = repository.findById(person0.getId()).get();
-				
+		
 		//Then / Assert
 		assertNotNull(savedPerson);
 		assertEquals(person0.getId(), savedPerson.getId());
 
 	}
 	
+	
+	@DisplayName("Given Person Object when FindByEmail then Return Person Object")
+	@Test
+	void testGivenPersonObject_whenFindByEmail_thenReturnPersonObject() {
+		
+		//Given / Arrange
+		Person person0 = new Person("Leandro", 
+				"Costa", 
+				"leandro@erudio.com.br",
+				"Uberlandia - Minas Gerais - Brasil",
+				"Male");
+
+		repository.save(person0);
+				
+		//When / Act
+		Person savedPerson = repository.findByEmail(person0.getEmail()).get();
+		
+		//Then / Assert
+		assertNotNull(savedPerson);
+		assertEquals(person0.getEmail(), savedPerson.getEmail());
+		assertEquals(person0.getId(), savedPerson.getId());
+
+	}
 	
 }
