@@ -3,11 +3,15 @@ package br.com.erudio.controllers;
 import static org.mockito.BDDMockito.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 //import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,15 +29,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.services.PersonServices;
 
-
-
-//CLASS para TESTAR os metodos da PERSONCONTROLLER/PERSONRESOURCE
 @WebMvcTest
 public class PersonControllerTest {
-
+	
 	@Autowired
 	private MockMvc mockMvc;
-
+	
 	@Autowired
 	private ObjectMapper mapper;
 	
@@ -41,13 +42,9 @@ public class PersonControllerTest {
 	private PersonServices service;
 	
 	private Person person;
-		
-	//criando um metoo de nome SETUP com as configuracoes padroes para TODOS OS TESTES
-	//pois por ter a ANNOTATION @BEFOREEACH esse SETUP sera EXEC toda vez
-	//antes de CADA TEST
+	
 	@BeforeEach
 	public void setup() {
-		//PERSON recebe a instanciacao de um OBJ do tipo PERSON, e atribuindo a ele os valores leandro, costa, leandro@eurudio.com.br, etc...
 		person = new Person("Leandro", 
 				"Costa", 
 				"leandro@erudio.com.br",
@@ -55,10 +52,9 @@ public class PersonControllerTest {
 				"Male");
 	}
 	
+	
 	//metodo para TESTAR metodo CREATE do PERSONCONTROLLER.JAVA... Para pd CRIAR um novo
 	//PERSON
-	//
-	//test[System Under Test]_[Condition or State Change]_[Expected Result]
 	@Test
 	@DisplayName("Given Person Object When Create Person Then Return Saved Person")
 	void testGivenPersonObject_WhenCreatePerson_ThenReturnSavedPerson() throws JsonProcessingException, Exception {
@@ -94,6 +90,34 @@ public class PersonControllerTest {
 		.andExpect(jsonPath("$.firstName", is(person.getFirstName())))
 		.andExpect(jsonPath("$.lastName", is(person.getLastName())))
 		.andExpect(jsonPath("$.email", is(person.getEmail())));
+		
+		
+	}
+	
+	//test[System Under Test]_[Condition or State Change]_[Expected Result]
+	@Test
+	@DisplayName("Given List Of Persons When FindAll Persons Then Return Persons List")
+	void testGivenListOfPersons_WhenFindAllPersons_ThenReturnPersonsList() throws JsonProcessingException, Exception {
+		
+		//Given / Arrange
+		List<Person> persons = new ArrayList<>();
+		persons.add(person);
+		persons.add(new Person("Leonardo", 
+				"Costa", 
+				"leonardo@erudio.com.br",
+				"Uberlandia - Minas Gerais - Brasil",
+				"Male"));
+		given(service.findAll()).willReturn(persons);
+		
+		//When / Act
+		ResultActions response = mockMvc.perform(get("/person"));
+		
+		//Then / Assert
+		response
+		.andExpect(status().isOk())
+		.andDo(print())
+		.andExpect(jsonPath("$.size()", is(persons.size())));
+		
 		
 	}
 	
