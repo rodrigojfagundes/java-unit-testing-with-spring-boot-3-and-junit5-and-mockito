@@ -15,7 +15,6 @@ public class PersonServices {
 	private final AtomicLong counter = new AtomicLong();
 	
 	private Logger logger = Logger.getLogger(PersonServices.class.getName());
-
 	
 	public List<Person> findAll() {
 
@@ -41,14 +40,14 @@ public class PersonServices {
 		person.setGender("Male");
 		return person;
 	}
-	
+ 
 	public Person create(Person person) {
 
 		logger.info("Creating one person!");
 		
 		return person;
 	}
-	
+
 	public Person update(Person person) {
 		
 		logger.info("Updating one person!");

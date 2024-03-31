@@ -13,11 +13,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import br.com.erudio.exceptions.ExceptionResponse;
 import br.com.erudio.exceptions.UnsupportedMathOperationException;
 
-
 @ControllerAdvice
 @RestController
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler{
-
+	
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ExceptionResponse> handleAllExceptions(
 			Exception ex, WebRequest request) {
@@ -26,10 +25,10 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 				new Date(),
 				ex.getMessage(),
 				request.getDescription(false));
-		
+
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@ExceptionHandler(UnsupportedMathOperationException.class)
 	public final ResponseEntity<ExceptionResponse> handleBadRequestExceptions(
 			Exception ex, WebRequest request) {
