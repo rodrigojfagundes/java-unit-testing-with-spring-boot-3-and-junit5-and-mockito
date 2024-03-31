@@ -16,7 +16,7 @@ import br.com.erudio.exceptions.UnsupportedMathOperationException;
 @ControllerAdvice
 @RestController
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler{
-	
+
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ExceptionResponse> handleAllExceptions(
 			Exception ex, WebRequest request) {
@@ -25,7 +25,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 				new Date(),
 				ex.getMessage(),
 				request.getDescription(false));
-		
+
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
