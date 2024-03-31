@@ -30,7 +30,7 @@ class PersonRepositoryTest {
 	void testGivenPersonObject_whenSave_ThenReturnSavedPerson() {
 		
 		//Given / Arrange
-	
+		
 		//instanciando um OBJ do tipo PERSON, e atribuindo a ele os valores
 		//leandro, costa, leandro@eurudio.com.br, etc...
 		Person person0 = new Person("Leandro", 
@@ -40,7 +40,7 @@ class PersonRepositoryTest {
 				"Male");
 		
 		//When / Act
-
+		
 		//quando nos salvarmos UM PERSON no BANCO, o PERSONREPOSITORY.JAVA
 		//precisa RETORNAR a PESSOA q foi salva (nome, email, etc...) apos ele
 		//SALVAR no BANCO...
@@ -56,13 +56,11 @@ class PersonRepositoryTest {
 
 	}
 
-	
 	@DisplayName("Given Person List when findAll Then Return Saved Person List")
 	@Test
 	void testGivenPersonList_whenFindAll_ThenReturnSavedPersonList() {
 		
 		//Given / Arrange
-
 		Person person0 = new Person("Leandro", 
 				"Costa", 
 				"leandro@erudio.com.br",
@@ -79,9 +77,7 @@ class PersonRepositoryTest {
 		repository.save(person1);
 		
 		//When / Act
-
 		List<Person> personList = repository.findAll();
-				
 		
 		//Then / Assert
 		assertNotNull(personList);
@@ -89,6 +85,8 @@ class PersonRepositoryTest {
 
 	}
 	
+	
+	//criando um METODO DE TEST, q vai TESTAR SE a BUSCA POR ID (findById) esta funcionando
 	@DisplayName("Given Person Object when Find By Id then Return Person Object")
 	@Test
 	void testGivenPersonObject_whenFindById_thenReturnPersonObject() {
@@ -104,14 +102,13 @@ class PersonRepositoryTest {
 				
 		//When / Act
 		Person savedPerson = repository.findById(person0.getId()).get();
-		
+				
 		//Then / Assert
 		assertNotNull(savedPerson);
 		assertEquals(person0.getId(), savedPerson.getId());
 
 	}
-	
-	
+		
 	@DisplayName("Given Person Object when FindByEmail then Return Person Object")
 	@Test
 	void testGivenPersonObject_whenFindByEmail_thenReturnPersonObject() {
@@ -132,7 +129,32 @@ class PersonRepositoryTest {
 		assertNotNull(savedPerson);
 		assertEquals(person0.getEmail(), savedPerson.getEmail());
 		assertEquals(person0.getId(), savedPerson.getId());
-
 	}
 	
+	@DisplayName("Given Person Object when Update Person then Return Updated Person Object")
+	@Test
+	void testGivenPersonObject_whenUpdatePerson_thenReturnUpdatedPersonObject() {
+		
+		//Given / Arrange
+		Person person0 = new Person("Leandro", 
+				"Costa", 
+				"leandro@erudio.com.br",
+				"Uberlandia - Minas Gerais - Brasil",
+				"Male");
+
+		repository.save(person0);
+		
+		//When / Act
+		Person savedPerson = repository.findById(person0.getId()).get();
+		savedPerson.setFirstName("Leonardo");
+		savedPerson.setEmail("leonardo@erudio.com.br");
+		Person updatedPerson = repository.save(savedPerson);
+		
+		//Then / Assert
+		assertNotNull(updatedPerson);
+		assertEquals("Leonardo", updatedPerson.getFirstName());
+		assertEquals("leonardo@erudio.com.br", updatedPerson.getEmail());
+		
+		
+	}
 }
