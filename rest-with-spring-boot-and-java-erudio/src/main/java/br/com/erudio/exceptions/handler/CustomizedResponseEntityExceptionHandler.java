@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import br.com.erudio.exceptions.ExceptionResponse;
 import br.com.erudio.exceptions.ResourceNotFoundException;
 
-
 @ControllerAdvice
 @RestController
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -23,7 +22,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
 		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
 				request.getDescription(false));
-		// e ele retorna a nossa EXECAO CUSTOMIZADA
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
