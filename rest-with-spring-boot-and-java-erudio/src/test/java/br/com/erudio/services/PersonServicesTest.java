@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 //import static org.mockito.Mockito.when;
 import static org.mockito.BDDMockito.given;
@@ -37,10 +38,10 @@ public class PersonServicesTest {
 	
 	@Mock
 	private PersonRepository repository;
-	
+
 	@InjectMocks
 	private PersonServices services;
-
+	
 	private Person person0;
 	
 	
@@ -49,8 +50,8 @@ public class PersonServicesTest {
 	//antes de CADA TEST
 	@BeforeEach
 	public void setup() {
-		
-		//PERSON0 recebe a instanciacao de um OBJ do tipo PERSON, e atribuindo a ele os valores leandro, costa, leandro@eurudio.com.br, etc...
+		//PERSON0 recebe a instanciacao de um OBJ do tipo PERSON, e atribuindo a ele os valores
+		//leandro, costa, leandro@eurudio.com.br, etc...
 		person0 = new Person("Leandro", 
 				"Costa", 
 				"leandro@erudio.com.br",
@@ -81,8 +82,8 @@ public class PersonServicesTest {
 
 		//criando um OBJ do tipo PERSON de nome SAVEDPERSON q vai receber o RETORNO
 		//do metodo CREATE do SERVICES, apos passar o OBJ PERSON0
-		Person savedPerson = services.create(person0);		
-		
+		Person savedPerson = services.create(person0);
+				
 		//Then / Assert
 
 		//agora aqui vamos testar SE SAVEDPERSON nao ta NULL (ou seja se RETORNOU ALGO)
@@ -92,24 +93,25 @@ public class PersonServicesTest {
 		
 	}
 	
+	//test[System Under Test]_[Condition or State Change]_[Expected Result]
 	@DisplayName("JUnit test for Given Existing Email When Save Person then Throws Exception")
 	@Test
 	void testGivenExistingEmail_WhenSavePerson_thenThrowsException() {
 		
 		//Given / Arrange
+
 		given(repository.findByEmail(anyString())).willReturn(Optional.of(person0));
 				
 		//When / Act
+		
 		assertThrows(ResourceNotFoundException.class, () -> {
 			services.create(person0);
 		});
-		
-		
+				
 		//Then / Assert
 		verify(repository, never()).save(any(Person.class));
-				
+		
 	}
-	
 	
 	@DisplayName("JUnit test for Given Persons List When FindAll Persons then Return Persons List")
 	@Test
@@ -122,15 +124,15 @@ public class PersonServicesTest {
 				"Uberlandia - Minas Gerais - Brasil",
 				"Male");
 
-		given(repository.findAll()).willReturn(List.of(person0, person1));
-				
-		//When / Act
-		List<Person> personList = services.findAll();
+		given(repository.findAll()).willReturn(List.of(person0, person1));		
 		
+		//When / Act
+		List<Person> personList = services.findAll();		
 		
 		//Then / Assert
 		assertNotNull(personList);
 		assertEquals(2, personList.size());
+		
 		
 	}
 	
@@ -140,18 +142,34 @@ public class PersonServicesTest {
 		
 		//Given / Arrange
 		given(repository.findAll()).willReturn(Collections.emptyList());
-				
+		
 		//When / Act
 		List<Person> personList = services.findAll();
+				
+		//Then / Assert
+		assertTrue(personList.isEmpty());
+		assertEquals(0, personList.size());		
 		
+	}
+
+	@DisplayName("JUnit test for Given Person Id When FindById then Return Person Object")
+	@Test
+	void testGivenPersonId_WhenFindById_thenReturnPersonObject() {
+		
+		//Given / Arrange
+		given(repository.findById(anyLong())).willReturn(Optional.of(person0));		
+		
+		//When / Act
+		Person savedPerson = services.findById(1L);		
 		
 		//Then / Assert
-
-		assertTrue(personList.isEmpty());
-		assertEquals(0, personList.size());
+		assertNotNull(savedPerson);
+		
+		assertEquals("Leandro", savedPerson.getFirstName());
 		
 		
 	}
+	
 	
 	
 }
