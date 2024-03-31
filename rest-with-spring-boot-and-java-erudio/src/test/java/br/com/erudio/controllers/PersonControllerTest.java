@@ -26,21 +26,23 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.services.PersonServices;
 
+//CLASS para TESTAR os metodos da PERSONCONTROLLER/PERSONRESOURCE
 @WebMvcTest
 public class PersonControllerTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
-
+	
 	@Autowired
 	private ObjectMapper mapper;
 	
 	@MockBean
 	private PersonServices service;
-	
+
 	private Person person;
 	
 	@BeforeEach
@@ -51,8 +53,7 @@ public class PersonControllerTest {
 				"Uberlandia - Minas Gerais - Brasil",
 				"Male");
 	}
-	
-	
+		
 	//metodo para TESTAR metodo CREATE do PERSONCONTROLLER.JAVA... Para pd CRIAR um novo
 	//PERSON
 	@Test
@@ -60,7 +61,7 @@ public class PersonControllerTest {
 	void testGivenPersonObject_WhenCreatePerson_ThenReturnSavedPerson() throws JsonProcessingException, Exception {
 		
 		//Given / Arrange
-		
+
 		//QUANDO CHAMAR O METODO CREATE DO SERVICE, RECEBENDO QUALQUER INSTANCIA de 
 		//PERSON.CLASS.... Vai RETORNAR(willAnswer) com uma funcao LAMBDA o ARGUMENTO
 		//Ou seja VAI RETORNAR o OBJ q foi CRIADO... no CASO O PERSON q FOI CRIADO
@@ -104,7 +105,7 @@ public class PersonControllerTest {
 				"leonardo@erudio.com.br",
 				"Uberlandia - Minas Gerais - Brasil",
 				"Male"));
-		given(service.findAll()).willReturn(persons);
+		given(service.findAll()).willReturn(persons);		
 		
 		//When / Act
 		ResultActions response = mockMvc.perform(get("/person"));
@@ -114,6 +115,7 @@ public class PersonControllerTest {
 		.andExpect(status().isOk())
 		.andDo(print())
 		.andExpect(jsonPath("$.size()", is(persons.size())));
+				
 	}
 	
 	@Test
@@ -122,7 +124,6 @@ public class PersonControllerTest {
 		
 		//Given / Arrange
 		long personId = 1L;
-		
 		given(service.findById(personId))
 			.willReturn(person);
 		
@@ -139,7 +140,24 @@ public class PersonControllerTest {
 		
 		
 	}
-	
-	
+
+	@Test
+	@DisplayName("Given Invalid Person Id When FindById Then Return Not Found")
+	void testGivenInvalidPersonId_WhenFindById_ThenReturnNotFound() throws JsonProcessingException, Exception {
+		
+		//Given / Arrange
+		long personId = 1L;
+		given(service.findById(personId))
+			.willThrow(ResourceNotFoundException.class);
+		
+		//When / Act
+		ResultActions response = mockMvc.perform(get("/person/{id}", personId));
+		
+		//Then / Assert
+		response
+		.andExpect(status().isNotFound())
+		.andDo(print());		
+		
+	}
 	
 }
