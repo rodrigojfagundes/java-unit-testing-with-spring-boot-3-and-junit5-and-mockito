@@ -1,3 +1,4 @@
+
 package br.com.erudio.controllers;
 
 import java.util.List;
@@ -19,14 +20,15 @@ public class PersonController {
 
 	@Autowired
 	private PersonServices service;
-	///private PersonServices service = new PersonServices();
 
+	///private PersonServices service = new PersonServices();
+	
 	@RequestMapping(method=RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Person> findAll() {
 		return service.findAll();
 	}
-	
+
 	@RequestMapping(value = "/{id}",
 			method=RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,7 +42,7 @@ public class PersonController {
 	public Person create(@RequestBody Person person) {
 		return service.create(person);
 	}
-	
+
 	@RequestMapping(method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
