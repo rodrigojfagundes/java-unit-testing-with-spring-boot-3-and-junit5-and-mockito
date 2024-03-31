@@ -10,11 +10,11 @@ import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.repositories.PersonRepository;
 
+
 @Service
 public class PersonServices {
 	
 	private Logger logger = Logger.getLogger(PersonServices.class.getName());
-
 	
 	@Autowired
 	PersonRepository repository;
@@ -40,7 +40,7 @@ public class PersonServices {
 		
 		return repository.save(person);
 	}
-	
+
 	public Person update(Person person) {
 		
 		logger.info("Updating one person!");

@@ -17,9 +17,10 @@ import br.com.erudio.services.PersonServices;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-
+	
 	@Autowired
 	private PersonServices service;
+
 	///private PersonServices service = new PersonServices();
 
 	@RequestMapping(method=RequestMethod.GET,
@@ -34,7 +35,7 @@ public class PersonController {
 	public Person findById(@PathVariable(value = "id") Long id) {
 		return service.findById(id);
 	}
-
+	
 	@RequestMapping(method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,6 +49,7 @@ public class PersonController {
 	public Person update(@RequestBody Person person) {
 		return service.update(person);
 	}
+	
 	
 	@RequestMapping(value = "/{id}",
 			method=RequestMethod.DELETE)
