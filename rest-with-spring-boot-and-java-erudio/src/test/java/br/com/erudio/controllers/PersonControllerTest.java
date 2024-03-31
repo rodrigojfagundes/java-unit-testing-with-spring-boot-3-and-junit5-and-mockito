@@ -34,7 +34,7 @@ public class PersonControllerTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private ObjectMapper mapper;
 	
@@ -60,7 +60,7 @@ public class PersonControllerTest {
 	void testGivenPersonObject_WhenCreatePerson_ThenReturnSavedPerson() throws JsonProcessingException, Exception {
 		
 		//Given / Arrange
-
+		
 		//QUANDO CHAMAR O METODO CREATE DO SERVICE, RECEBENDO QUALQUER INSTANCIA de 
 		//PERSON.CLASS.... Vai RETORNAR(willAnswer) com uma funcao LAMBDA o ARGUMENTO
 		//Ou seja VAI RETORNAR o OBJ q foi CRIADO... no CASO O PERSON q FOI CRIADO
@@ -68,21 +68,19 @@ public class PersonControllerTest {
 			.willAnswer((invocation) -> invocation.getArgument(0));
 		
 		//When / Act
-		
+
 		//chamando o METODO PERFORM do MOCKMVC e ele vai fazer uma REQUISICAO do TIPO
 		//POST para a URL /PERSON... Q no caso cai no PERSONCONTROLLER.JAVA
 		//e o POST e o do METODO CREATE... E dai USANDO JSON nos vamos passar o 
 		//CONTENT/CONTEUDO um OBJ PERSON com o CONTEUDO da requisicao... 
 		//Ou seja vamos CAD o OBJ PERSON... e o OBJ MAPPER q pegou os DADOS do PERSON
 		//e criou um JSON com as INFO...
-		//E O RESULTADO/RETORNO vai ficar salvo na VAR/OBJ do TIPO RESULTACTIONS
-		//de NOME RESPONSE...
 		ResultActions response = mockMvc.perform(post("/person")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(person)));
 		
 		//Then / Assert
-		
+
 		//vamos verificar o RESULTADO, pois apos CAD um PERSON ele deve RETORNAR
 		//o PERSON q foi CAD... 
 		response.andDo(print())
@@ -94,7 +92,6 @@ public class PersonControllerTest {
 		
 	}
 	
-	//test[System Under Test]_[Condition or State Change]_[Expected Result]
 	@Test
 	@DisplayName("Given List Of Persons When FindAll Persons Then Return Persons List")
 	void testGivenListOfPersons_WhenFindAllPersons_ThenReturnPersonsList() throws JsonProcessingException, Exception {
@@ -117,8 +114,32 @@ public class PersonControllerTest {
 		.andExpect(status().isOk())
 		.andDo(print())
 		.andExpect(jsonPath("$.size()", is(persons.size())));
+	}
+	
+	@Test
+	@DisplayName("Given Person Id When FindById Then Return Person Object")
+	void testGivenPersonId_WhenFindById_ThenReturnPersonObject() throws JsonProcessingException, Exception {
+		
+		//Given / Arrange
+		long personId = 1L;
+		
+		given(service.findById(personId))
+			.willReturn(person);
+		
+		//When / Act
+		ResultActions response = mockMvc.perform(get("/person/{id}", personId));
+		
+		//Then / Assert
+		response
+		.andExpect(status().isOk())
+		.andDo(print())
+		.andExpect(jsonPath("$.firstName", is(person.getFirstName())))
+		.andExpect(jsonPath("$.lastName", is(person.getLastName())))
+		.andExpect(jsonPath("$.email", is(person.getEmail())));
 		
 		
 	}
+	
+	
 	
 }
