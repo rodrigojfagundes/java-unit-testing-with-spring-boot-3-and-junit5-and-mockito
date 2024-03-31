@@ -33,10 +33,8 @@ public class PersonController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Person> findById(@PathVariable(value = "id") Long id) {
 		try {
-
 			return ResponseEntity.ok(service.findById(id));
 		} catch (Exception e) {
-
 			return ResponseEntity.notFound().build();
 			
 		}
@@ -58,7 +56,7 @@ public class PersonController {
 			
 		}
 	}
-
+	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 		service.delete(id);

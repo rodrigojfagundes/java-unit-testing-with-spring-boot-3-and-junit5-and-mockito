@@ -20,7 +20,6 @@ public class PersonServices {
 	PersonRepository repository;
 
 	public List<Person> findAll() {
-
 		logger.info("Finding all people!");
 		return repository.findAll();
 	}
@@ -31,7 +30,7 @@ public class PersonServices {
 		return repository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 	}
-	
+
 	public Person create(Person person) {
 
 		logger.info("Creating one person!");
@@ -44,8 +43,9 @@ public class PersonServices {
 		
 		return repository.save(person);
 	}
-
-	public Person update(Person person) {		
+	
+	public Person update(Person person) {
+		
 		logger.info("Updating one person!");
 		
 		var entity = repository.findById(person.getId())
@@ -58,7 +58,7 @@ public class PersonServices {
 		
 		return repository.save(person);
 	}
-
+	
 	public void delete(Long id) {
 		
 		logger.info("Deleting one person!");

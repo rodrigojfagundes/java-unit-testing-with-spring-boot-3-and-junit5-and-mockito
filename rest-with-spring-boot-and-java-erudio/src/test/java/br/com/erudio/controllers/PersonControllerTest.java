@@ -3,6 +3,7 @@ package br.com.erudio.controllers;
 import static org.mockito.BDDMockito.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 //import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,10 +32,9 @@ import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.services.PersonServices;
 
-//CLASS para TESTAR os metodos da PERSONCONTROLLER/PERSONRESOURCE
 @WebMvcTest
 public class PersonControllerTest {
-
+	
 	@Autowired
 	private MockMvc mockMvc;
 	
@@ -43,7 +43,7 @@ public class PersonControllerTest {
 	
 	@MockBean
 	private PersonServices service;
-
+	
 	private Person person;
 	
 	@BeforeEach
@@ -58,12 +58,14 @@ public class PersonControllerTest {
 	
 	//metodo para TESTAR metodo CREATE do PERSONCONTROLLER.JAVA... Para pd CRIAR um novo
 	//PERSON
+	//
+	//test[System Under Test]_[Condition or State Change]_[Expected Result]
 	@Test
 	@DisplayName("Given Person Object When Create Person Then Return Saved Person")
 	void testGivenPersonObject_WhenCreatePerson_ThenReturnSavedPerson() throws JsonProcessingException, Exception {
 		
 		//Given / Arrange
-		
+
 		//QUANDO CHAMAR O METODO CREATE DO SERVICE, RECEBENDO QUALQUER INSTANCIA de 
 		//PERSON.CLASS.... Vai RETORNAR(willAnswer) com uma funcao LAMBDA o ARGUMENTO
 		//Ou seja VAI RETORNAR o OBJ q foi CRIADO... no CASO O PERSON q FOI CRIADO
@@ -71,7 +73,7 @@ public class PersonControllerTest {
 			.willAnswer((invocation) -> invocation.getArgument(0));
 		
 		//When / Act
-
+		
 		//chamando o METODO PERFORM do MOCKMVC e ele vai fazer uma REQUISICAO do TIPO
 		//POST para a URL /PERSON... Q no caso cai no PERSONCONTROLLER.JAVA
 		//e o POST e o do METODO CREATE... E dai USANDO JSON nos vamos passar o 
@@ -85,7 +87,7 @@ public class PersonControllerTest {
 		//Then / Assert
 		
 		//vamos verificar o RESULTADO, pois apos CAD um PERSON ele deve RETORNAR
-		//o PERSON q foi CAD... 
+		//o PERSON q foi CAD...
 		response.andDo(print())
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$.firstName", is(person.getFirstName())))
@@ -118,16 +120,14 @@ public class PersonControllerTest {
 		.andDo(print())
 		.andExpect(jsonPath("$.size()", is(persons.size())));
 		
-		
 	}
-	
+
 	@Test
 	@DisplayName("Given Person Id When FindById Then Return Person Object")
 	void testGivenPersonId_WhenFindById_ThenReturnPersonObject() throws JsonProcessingException, Exception {
 		
 		//Given / Arrange
-		long personId = 1L;
-		
+		long personId = 1L;		
 		given(service.findById(personId))
 			.willReturn(person);
 		
@@ -142,8 +142,9 @@ public class PersonControllerTest {
 		.andExpect(jsonPath("$.lastName", is(person.getLastName())))
 		.andExpect(jsonPath("$.email", is(person.getEmail())));
 		
+		
 	}
-	
+
 	@Test
 	@DisplayName("Given Invalid Person Id When FindById Then Return Not Found")
 	void testGivenInvalidPersonId_WhenFindById_ThenReturnNotFound() throws JsonProcessingException, Exception {
@@ -162,7 +163,7 @@ public class PersonControllerTest {
 		.andDo(print());		
 		
 	}
-
+	
 	@Test
 	@DisplayName("Given Update PersonWhen Update Then Return Updated Person Object")
 	void testGivenUpdatePerson_WhenUpdate_ThenReturnUpdatedPersonObject() throws JsonProcessingException, Exception {
@@ -195,20 +196,19 @@ public class PersonControllerTest {
 		
 		
 	}
-	
+
 	@Test
 	@DisplayName("Given Unexistent Person When Update Then Return Not Found")
 	void testGivenUnexistentPerson_WhenUpdate_ThenReturnNotFound() throws JsonProcessingException, Exception {
 		
 		//Given / Arrange
 		long personId = 1L;
-		
 		given(service.findById(personId)).willReturn(person);
+
 		given(service.update(any(Person.class)))
 			.willAnswer((invocation) -> invocation.getArgument(1));
 				
 		//When / Act
-
 		Person updatedPerson = new Person("Leonardo", 
 				"Costa", 
 				"leonardo@erudio.com.br",
@@ -222,6 +222,24 @@ public class PersonControllerTest {
 		//Then / Assert
 		response
 		.andExpect(status().isNotFound())
+		.andDo(print());
+	}	
+	
+	@Test
+	@DisplayName("Give Person Id When Delete Then Return Not Content")
+	void testGivePersonId_WhenDelete_ThenReturnNotContent() throws JsonProcessingException, Exception {
+		
+		//Given / Arrange
+		long personId = 1L;
+		willDoNothing().given(service).delete(personId);
+				
+		//When / Act
+		ResultActions response = mockMvc.perform(delete("/person/{id}", personId));
+		
+		//Then / Assert
+		response
+		.andExpect(status().isNoContent())
 		.andDo(print());		
 	}
+	
 }
