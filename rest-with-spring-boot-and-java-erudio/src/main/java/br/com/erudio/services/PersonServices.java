@@ -10,7 +10,6 @@ import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.repositories.PersonRepository;
 
-
 @Service
 public class PersonServices {
 	
@@ -33,7 +32,6 @@ public class PersonServices {
 		return repository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 	}
-	
 
 	public Person create(Person person) {
 
@@ -56,7 +54,7 @@ public class PersonServices {
 		
 		return repository.save(person);
 	}
-
+	
 	public void delete(Long id) {
 		
 		logger.info("Deleting one person!");

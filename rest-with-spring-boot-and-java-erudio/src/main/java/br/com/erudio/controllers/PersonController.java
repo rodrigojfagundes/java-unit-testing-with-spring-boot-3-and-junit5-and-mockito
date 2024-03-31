@@ -20,17 +20,17 @@ import br.com.erudio.services.PersonServices;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-
+	
 	@Autowired
 	private PersonServices service;
-
+	
 	///private PersonServices service = new PersonServices();
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Person> findAll() {
 		return service.findAll();
 	}
-
+		
 	@GetMapping(value = "/{id}",
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Person findById(@PathVariable(value = "id") Long id) {
@@ -49,6 +49,7 @@ public class PersonController {
 		return service.update(person);
 	}
 	
+	//ANNOTATION @DELETEMAPPING para poder deletar um PERSON
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 		service.delete(id);
